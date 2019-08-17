@@ -32,10 +32,10 @@ class Root
         var N     = arr[1];
         var M     = arr[2];
         // Console.WriteLine("{0} {1} {2}", A, N, M);
-        var nos = new List<int>();
+        var nos = new List<ulong>();
         for (var i = 1;; ++i) {
-            var ret_pow = (int)Math.Pow(i + A, N);
-            if (ret_pow > M) break;
+            var ret_pow = (ulong)Math.Pow(i + A, N);
+            if (ret_pow > (ulong)M) break;
             nos.Add(ret_pow);
         }
         // foreach (var no in nos) {
@@ -46,7 +46,7 @@ class Root
         // });
         var ret   = nos.AsParallel().Where(no => {
             var ints    = no.ToString().ToCharArray().Select(c => (int)char.GetNumericValue(c));
-            var ret_pow = (int)Math.Pow(ints.Sum() + A, N);
+            var ret_pow = (ulong)Math.Pow(ints.Sum() + A, N);
             return no == ret_pow;
         });
         var count = ret.Count();
