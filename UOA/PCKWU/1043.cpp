@@ -58,17 +58,17 @@ int main()
             if (l.penalty > r.penalty) return false;
             return l.id < r.id;
         });
-        for (auto ite(teams.begin()); ite != teams.end(); /*++ite*/) {
-            const auto& team(*ite);
-            const bool  is_win = [&] {
+        for (const auto& team : teams) {
+            const bool is_win = [&] {
+                const auto winner_size(winner.size());
                 const auto group_wins(map_group_wins[team.group]);
-                if (winner.size() < 10 && group_wins < 3) {
+                if (winner_size < 10 && group_wins < 3) {
                     return true;
                 }
-                if (winner.size() < 20 && group_wins < 2) {
+                if (winner_size < 20 && group_wins < 2) {
                     return true;
                 }
-                if (winner.size() < 26 && group_wins == 0) {
+                if (winner_size < 26 && group_wins == 0) {
                     return true;
                 }
                 return false;
@@ -77,10 +77,6 @@ int main()
                 cout << team.id << endl;
                 ++map_group_wins[team.group];
                 winner.push_back(team);
-                ite = teams.erase(ite);
-            }
-            else {
-                ++ite;
             }
         }
     }
