@@ -5,11 +5,12 @@ using namespace std;
 template <typename T>
 using vec1 = vector<T>;
 
-constexpr auto cin2line([] {
+string cin2line()
+{
     string s;
     getline(cin, s);
     return s;
-});
+}
 
 vec1<string> Split(const string& str, char sep)
 {
