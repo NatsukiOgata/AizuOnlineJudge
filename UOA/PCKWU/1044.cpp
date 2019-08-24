@@ -47,7 +47,6 @@ bool matchWordsByCC(const string& str, vec1<string>& words)
     for (sregex_iterator ite(str.cbegin(), str.cend(), ptn), end; ite != end; ++ite) {
         auto&&     m(*ite);
         const auto word(str.substr(start, m.position() - start));
-        if (str == word) break;
         if (word.empty()) continue;
         words.push_back(word);
         start = m.position();
