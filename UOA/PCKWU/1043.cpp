@@ -40,6 +40,7 @@ int main()
         const auto N(cin2var<int>());
         if (!N) break;
         teams.clear();
+        winner.clear();
         map_group_wins.clear();
         for (int i = 0; i < N; ++i) {
             const auto Ns(cin2vec<int>(4));
