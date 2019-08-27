@@ -71,7 +71,7 @@ int main()
                 sum_a -= pow;
                 sum_b += pow;
             }
-            assert(sum_a > 0);
+            assert(sum_a >= 0);
             assert(sum_b >= 0);
             const auto diff_ab = abs(sum_a - sum_b);
             if (diff_min > diff_ab) {
