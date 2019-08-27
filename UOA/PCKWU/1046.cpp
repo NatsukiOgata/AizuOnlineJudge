@@ -79,7 +79,7 @@ void Hosuu(size_t x, size_t y, int count)
     if (c_now == '#') return;
     Mutable& mt(mt_);
     auto&    now(Ref(mt.vec2map, x, y));
-    if (now < count) return;
+    if (now <= count) return;
     now = count;
     if (mt.max_count < now) {
         mt.max_count = now;
