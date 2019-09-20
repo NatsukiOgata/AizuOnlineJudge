@@ -55,8 +55,19 @@ int main()
     int total = 0;
     for (const auto& table : tables) {
         const int count(get<1>(table));
-        if (counts[count] == 0) continue;
-        --counts[count];
+        bool continue2 = false;
+        for (int i = count; i < N; ++i) {
+            if (counts[i] == 0) {
+                continue2 = true;
+                break;
+            }
+        }
+        if (continue2) {
+            continue;
+        }
+        for (int i = count; i < N; ++i) {
+            --counts[i];
+        }
         const int cost(get<0>(table));
         total += cost;
     }
