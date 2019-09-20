@@ -32,15 +32,28 @@ void sub()
 
     vec1<AB> abs;
     vec1<BA> bas;
+    vec1<AB> cs;
     for (size_t i = 0; i < N; ++i) {
         const auto ab(cin2vec<int64_t>(2));
         if (ab[0] > ab[1]) continue;  // 絶対に負ける
         abs.push_back(make_tuple(ab[0], ab[1]));
         bas.push_back(make_tuple(ab[1], ab[0]));
+        cs.push_back(make_tuple(ab[0], ab[1]));
     }
 
     sort(abs.begin(), abs.end());
     sort(bas.begin(), bas.end());
+    sort(cs.begin(), cs.end(), [](const auto& l, const auto& r) {
+            const auto& la(get<0>(l));
+            const auto& lb(get<1>(l));
+            const auto& ra(get<0>(r));
+            const auto& rb(get<1>(r));
+            const auto lab(la + lb);
+            const auto rab(ra + rb);
+            if (lab != rab) return lab < rab;
+            if (lb != rb) return lb < rb;
+            return la < rb;
+    });
 
     // プランA
     int64_t winA = 0;
@@ -64,8 +77,19 @@ void sub()
             }
         }
     }
+    // プランC
+    int64_t winC = 0;
+    {
+        int64_t time = 0;
+        for (const auto& c : cs) {
+            if (time + get<0>(c) <= get<1>(c)) {
+                time += get<0>(c);
+                ++winC;
+            }
+        }
+    }
 
-    cout << max(winA, winB) << endl;
+    cout << max({winA, winB, winC}) << endl;
 }
 
 int main()
