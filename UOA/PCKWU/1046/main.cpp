@@ -29,9 +29,14 @@ T& Ref(vec2<T>& v2, size_t x, size_t y)
 template <typename T>
 bool Find(const vec2<T>& v2, const T& val, size_t& x, size_t& y)
 {
-    for (y = 0; y < v2.size(); ++y) {
-        for (x = 0; x < v2.front().size(); ++x) {
-            if (Get(v2, x, y) == val) return true;
+    for (size_t j = 0; j < v2.size(); ++j) {
+        const auto& v1(v2[j]);
+        for (size_t i = 0; i < v1.size(); ++i) {
+            if (v1[i] == val) {
+                x = i;
+                y = j;
+                return true;
+            }
         }
     }
     return false;
@@ -55,6 +60,8 @@ vec1<T> cin2vec(size_t size)
     return vec1;
 }
 
+constexpr int Inf = INT_MAX / 2;
+
 struct Immutable
 {
     size_t     W;
@@ -72,29 +79,31 @@ struct Mutable
 Immutable it_{};
 Mutable   mt_{};
 
-void Hosuu(size_t x, size_t y, int count)
+void Hosuu(size_t x, size_t y)
 {
-    const Immutable& it(it_);
-    const auto&      c_now(Get(it.vec2map, x, y));
-    if (c_now == '#') return;
-    Mutable& mt(mt_);
-    auto&    now(Ref(mt.vec2map, x, y));
-    if (now <= count) return;
-    now = count;
-    if (mt.max_count < now) {
-        mt.max_count = now;
-    }
-    if (y > 0) {
-        Hosuu(x, y - 1, count + 1);
-    }
-    if (x < it.W - 1) {
-        Hosuu(x + 1, y, count + 1);
-    }
-    if (y < it.H - 1) {
-        Hosuu(x, y + 1, count + 1);
-    }
-    if (x > 0) {
-        Hosuu(x - 1, y, count + 1);
+    const array<int, 4> dx{1, 0, -1, 0};
+    const array<int, 4> dy{0, 1, 0, -1};
+    const Immutable&    it(it_);
+    Mutable&            mt(mt_);
+    Ref(mt.vec2map, x, y) = 0;
+    using XY              = tuple<size_t, size_t>;
+    queue<XY> que;
+    que.push(make_tuple(x, y));
+    while (!que.empty()) {
+        const XY& xy(que.front());
+        que.pop();
+        const int max_count = Get(mt.vec2map, get<0>(xy), get<1>(xy)) + 1;
+        for (size_t i = 0; i < dx.size(); ++i) {
+            const int nx = get<0>(xy) + dx[i];
+            const int ny = get<1>(xy) + dy[i];
+            if (0 > nx || nx >= static_cast<int>(it.W) || 0 > ny || ny >= static_cast<int>(it.H)) continue;
+            if (Get(it.vec2map, nx, ny) == '#' || Get(mt.vec2map, nx, ny) != Inf) continue;
+            que.push(make_tuple(nx, ny));
+            Ref(mt.vec2map, nx, ny) = max_count;
+            if (mt.max_count < max_count) {
+                mt.max_count = max_count;
+            }
+        }
     }
 }
 
@@ -148,7 +157,7 @@ bool sub()
     }
     it_.pattern = cin2var<string>();
 
-    mt_.vec2map = InitVec2<int>(it_.W, it_.H, INT_MAX);
+    mt_.vec2map = InitVec2<int>(it_.W, it_.H, Inf);
 
     size_t a_x = 0;
     size_t a_y = 0;
@@ -158,7 +167,7 @@ bool sub()
     }
 
     // 移動距離を求める
-    Hosuu(a_x, a_y, 0);
+    Hosuu(a_x, a_y);
 
     size_t b_x = 0;
     size_t b_y = 0;
@@ -169,7 +178,7 @@ bool sub()
 
     // 調査するターン数を決める
     const int  pattern_size = it_.pattern.size();
-    const int  g_count      = pattern_size * (pattern_size + 1);
+    const int  g_count      = pattern_size * pattern_size * 2;
     const auto count        = max(mt_.max_count, g_count);
 
     // ゴーストを動かす
