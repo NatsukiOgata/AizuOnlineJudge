@@ -36,15 +36,16 @@ void sub()
         const auto Ss(cin2vec<Int>(3));
         const auto Es(cin2vec<Int>(3));
 
-        system_clock::time_point tp;
-        tp +=   hours(Es[0]);
-        tp += minutes(Es[1]);
-        tp += seconds(Es[2]);
-        tp -=   hours(Ss[0]);
-        tp -= minutes(Ss[1]);
-        tp -= seconds(Ss[2]);
+        system_clock::time_point tp_s;
+        tp_s +=   hours(Ss[0]);
+        tp_s += minutes(Ss[1]);
+        tp_s += seconds(Ss[2]);
+        system_clock::time_point tp_e;
+        tp_e +=   hours(Es[0]);
+        tp_e += minutes(Es[1]);
+        tp_e += seconds(Es[2]);
 
-        const system_clock::duration d(tp.time_since_epoch());
+        const auto d(tp_e - tp_s);
         cout << duration_cast<hours>(d).count() << ' ';
         cout << duration_cast<minutes>(d).count() % 60 << ' ';
         cout << duration_cast<seconds>(d).count() % 60 << endl;
