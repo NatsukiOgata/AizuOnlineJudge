@@ -6,7 +6,6 @@ using namespace std;
 using namespace std::chrono;
 
 using Int  = int_fast64_t;
-using UInt = uint_fast64_t;
 
 template <typename T>
 using vec1 = vector<T>;
@@ -29,26 +28,34 @@ vec1<T> cin2vec(size_t size)
     return vec1;
 }
 
+template <typename T>
+int get_hours(const T& chrono)
+{
+    return duration_cast<hours>(chrono).count() % 24;
+}
+
+template <typename T>
+int get_minutes(const T& chrono)
+{
+    return duration_cast<minutes>(chrono).count() % 60;
+}
+
+template <typename T>
+int get_seconds(const T& chrono)
+{
+    return duration_cast<seconds>(chrono).count() % 60;
+}
+
 void sub()
 {
     const auto N = 3;
     for (auto i = 0u; i < N; ++i) {
         const auto Ss(cin2vec<Int>(3));
         const auto Es(cin2vec<Int>(3));
-
-        system_clock::time_point tp_s;
-        tp_s +=   hours(Ss[0]);
-        tp_s += minutes(Ss[1]);
-        tp_s += seconds(Ss[2]);
-        system_clock::time_point tp_e;
-        tp_e +=   hours(Es[0]);
-        tp_e += minutes(Es[1]);
-        tp_e += seconds(Es[2]);
-
+        const auto tp_s(hours(Ss[0]) + minutes(Ss[1]) + seconds(Ss[2]));
+        const auto tp_e(hours(Es[0]) + minutes(Es[1]) + seconds(Es[2]));
         const auto d(tp_e - tp_s);
-        cout << duration_cast<hours>(d).count() << ' ';
-        cout << duration_cast<minutes>(d).count() % 60 << ' ';
-        cout << duration_cast<seconds>(d).count() % 60 << endl;
+        cout << get_hours(d) << ' ' << get_minutes(d) << ' ' << get_seconds(d) << endl;
     }
 }
 
