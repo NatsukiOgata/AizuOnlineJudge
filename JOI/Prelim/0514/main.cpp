@@ -4,6 +4,9 @@
 
 using namespace std;
 
+using Int  = int_fast64_t;
+using UInt = uint_fast64_t;
+
 template <typename T>
 using vec1 = vector<T>;
 
@@ -16,7 +19,7 @@ T cin2var()
 }
 
 template <typename T>
-vec1<T> cin2vec(size_t size)
+vec1<T> cin2vec(UInt size)
 {
     vec1<T> vec1(size);
     for (auto& v : vec1) {
@@ -25,36 +28,45 @@ vec1<T> cin2vec(size_t size)
     return vec1;
 }
 
+enum
+{
+    NG,
+    OK,
+    UNKNOWN,
+};
+
 void sub()
 {
-    const auto AN(cin2var<size_t>());
-    const auto BN(cin2var<size_t>());
-    const auto CN(cin2var<size_t>());
-    const auto N(cin2var<size_t>());
-    vec1<tuple<int64_t, set<int64_t>>> setABCs;
-    for (size_t i = 0; i < N; ++i) {
-        const auto Rs(cin2vec<int64_t>(4));
-        set<int64_t> setABC{Rs.cbegin(), prev(Rs.cend())};
-        int64_t result = *Rs.rbegin();
-        setABCs.push_back(make_tuple(result, move(setABC)));
+    const auto AN(cin2var<UInt>());
+    const auto BN(cin2var<UInt>());
+    const auto CN(cin2var<UInt>());
+    const auto N(cin2var<UInt>());
+
+    priority_queue<tuple<Int, set<Int>>> pqABC;
+    for (auto i = 0u; i < N; ++i) {
+        const auto Rs(cin2vec<Int>(3));
+        const auto Re(cin2var<Int>());
+        set<Int>   setABC{Rs.cbegin(), Rs.cend()};
+        pqABC.push(make_tuple(Re, move(setABC)));
     }
-    sort(setABCs.rbegin(), setABCs.rend()); // 合格したものが先に並ぶ
-    map<int64_t, int64_t> map_result;
-    for (const auto& setABC : setABCs) {
-        if (!get<0>(setABC)) break; // 不合格
+    map<Int, Int> map_result;
+    for (; !pqABC.empty(); pqABC.pop()) {
+        const auto& setABC(pqABC.top());
+        if (!get<0>(setABC)) break;  // 不合格
         const auto& abc(get<1>(setABC));
+        // 完動品
         for (const auto& s : abc) {
-            map_result[s] = 1;
+            map_result[s] = OK;
         }
     }
-    for (const auto& setABC : setABCs) {
-        if (get<0>(setABC)) continue; // 合格
+    for (; !pqABC.empty(); pqABC.pop()) {
+        const auto& setABC(pqABC.top());
         const auto& abc(get<1>(setABC));
-        int oks = 0;
-        int64_t ng_no = 0;
+        int         oks   = 0;
+        Int         ng_no = 0;
         for (const auto& s : abc) {
-            auto ite(map_result.find(s));
-            if (ite != map_result.end() && ite->second == 1) {
+            const auto ite(map_result.find(s));
+            if (ite != map_result.cend() && ite->second == OK) {
                 ++oks;
             }
             else {
@@ -63,14 +75,14 @@ void sub()
         }
         if (oks == 2) {
             // 故障が確定
-            map_result[ng_no] = 1;
+            map_result[ng_no] = NG;
         }
     }
-    for (size_t i = 1; i <= AN + BN + CN; ++i) {
+    for (auto i = 1u; i <= AN + BN + CN; ++i) {
         const auto ite(map_result.find(i));
-        int ans = 0;
-        if (ite == map_result.end()) {
-            ans = 2;
+        int        ans = 0;
+        if (ite == map_result.cend()) {
+            ans = UNKNOWN;
         }
         else {
             ans = ite->second;
