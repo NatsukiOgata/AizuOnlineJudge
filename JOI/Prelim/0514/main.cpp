@@ -35,11 +35,14 @@ enum
     UNKNOWN,
 };
 
-void sub()
+bool sub()
 {
     const auto AN(cin2var<UInt>());
     const auto BN(cin2var<UInt>());
     const auto CN(cin2var<UInt>());
+
+    if (!AN || !BN || !CN) return false;
+
     const auto N(cin2var<UInt>());
 
     priority_queue<tuple<Int, set<Int>>> pqABC;
@@ -89,12 +92,13 @@ void sub()
         }
         cout << ans << endl;
     }
+    return true;
 }
 
 int main()
 {
     cin.tie(nullptr);
     ios_base::sync_with_stdio(false);
-    sub();
+    while(sub());
     return 0;
 }
