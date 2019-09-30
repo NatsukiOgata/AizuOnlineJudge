@@ -1,0 +1,137 @@
+// JOI - Prelim  0515
+// 通学経路
+#include <bits/stdc++.h>
+
+using namespace std;
+
+using Int  = int_fast64_t;
+using UInt = uint_fast64_t;
+
+template <typename T>
+using vec1 = vector<T>;
+
+template <typename T>
+using vec2 = vec1<vec1<T>>;
+
+template <typename T>
+vec2<T> InitVec2(size_t x, size_t y, const T& i = T())
+{
+    return vec2<T>(y, vec1<T>(x, i));
+}
+
+template <typename T>
+T Get(const vec2<T>& v2, size_t x, size_t y)
+{
+    return v2[y][x];
+}
+
+template <typename T>
+T& Ref(vec2<T>& v2, size_t x, size_t y)
+{
+    return v2[y][x];
+}
+
+template <typename T>
+bool Find(const vec2<T>& v2, const T& val, size_t& x, size_t& y)
+{
+    for (size_t j = 0; j < v2.size(); ++j) {
+        const auto& v1(v2[j]);
+        for (size_t i = 0; i < v1.size(); ++i) {
+            if (v1[i] == val) {
+                x = i;
+                y = j;
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+template <typename T>
+bool Find(const vec2<T>& v2, const T& val)
+{
+    return any_of(v2.cbegin(), v2.cend(), [&](const auto& v1) {
+        return any_of(v1.cbegin(), v1.cend(), [&](const auto& v) { return v == val; });
+    });
+}
+
+template <typename T>
+T cin2var()
+{
+    T val;
+    cin >> val;
+    return val;
+}
+
+template <typename T>
+vec1<T> cin2vec(size_t size)
+{
+    vec1<T> vec1(size);
+    for (auto& v : vec1) {
+        v = cin2var<T>();
+    }
+    return vec1;
+}
+
+enum class RoadType
+{
+    UNREACHED,              // 未到達
+    REACHING,               // 到達
+    INTRUSION_NOT_POSSIBLE, // 侵入不可
+};
+
+using XY = tuple<UInt, UInt>;
+
+const array<Int, 2> dx{1, 0};
+const array<Int, 2> dy{0, 1};
+
+bool sub()
+{
+    const auto A(cin2var<UInt>());
+    const auto B(cin2var<UInt>());
+
+    if (!A || !B) return false;
+
+    vec2<RoadType> vec2map(InitVec2<RoadType>(A, B));
+
+    const auto N(cin2var<UInt>());
+    for (auto i = 0u; i < N; ++i) {
+        const auto X(cin2var<UInt>() - 1);
+        const auto Y(cin2var<UInt>() - 1);
+        Ref(vec2map, X, Y) = RoadType::INTRUSION_NOT_POSSIBLE;
+    }
+
+    set<XY> setXY;
+
+    queue<XY> queueXY;
+    queueXY.push(make_tuple(0, 0));
+    Ref(vec2map, 0, 0) = RoadType::REACHING;
+    for (; !queueXY.empty(); queueXY.pop()) {
+        const auto& xy(queueXY.front());
+        setXY.insert(xy);
+        for (auto i = 0u; i < dx.size(); ++i) {
+            const UInt nx = get<0>(xy) + dx[i];
+            const UInt ny = get<1>(xy) + dy[i];
+            if (nx >= A || ny >= B) continue;
+            const auto& nrt = Get(vec2map, nx, ny);
+            if (nrt != RoadType::UNREACHED) continue;
+            queueXY.push(make_tuple(nx, ny));
+            Ref(vec2map, nx, ny) = RoadType::REACHING;
+        }
+    }
+
+    //cout << setXY.size() << endl;
+    for (const auto& xy : setXY) {
+        cout << get<0>(xy) << ' ' << get<1>(xy) << endl;
+    }
+
+    return true;
+}
+
+int main()
+{
+    cin.tie(nullptr);
+    ios_base::sync_with_stdio(false);
+    while (sub());
+    return 0;
+}
