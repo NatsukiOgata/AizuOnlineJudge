@@ -24,20 +24,24 @@ fn sub() -> bool
         m += 12;
     }
     let dayofweek = (y + y / 4 - y / 100 + y / 400 + (13 * m + 8) / 5 + d) % 7;
-    let ans = match dayofweek {
-        0 => "Sunday",
-        1 => "Monday",
-        2 => "Tuesday",
-        3 => "Wednesday",
-        4 => "Thursday",
-        5 => "Friday",
-        6 => "Saturday",
-        _ => "",
-    };
+    let table = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+    ];
+    let ans = table[dayofweek as usize];
     println!("{}", ans);
     return true;
 }
 
 fn main() {
-    while sub() {}
+    loop {
+        if !sub() {
+            break;
+        }
+    }
 }
