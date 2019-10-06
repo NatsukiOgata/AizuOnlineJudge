@@ -52,13 +52,7 @@ fn main() {
     let mut b_s = a_s.split_off(10);
     a_s.sort_by(|a, b| b.cmp(a));
     b_s.sort_by(|a, b| b.cmp(a));
-    let mut a_sum = 0;
-    for a in a_s.iter().take(3) {
-        a_sum += a;
-    }
-    let mut b_sum = 0;
-    for b in b_s.iter().take(3) {
-        b_sum += b;
-    }
+    let a_sum = a_s.iter().take(3).fold(0, |sum, v| sum + v);
+    let b_sum = b_s.iter().take(3).fold(0, |sum, v| sum + v);
     println!("{} {}", a_sum, b_sum);
 }
