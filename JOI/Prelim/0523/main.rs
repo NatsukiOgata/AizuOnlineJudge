@@ -39,12 +39,14 @@ fn sub() -> bool {
     let mut ba = 0u32;
     'fin: loop {
         for cards in &mut cardss {
-            let val = cards.iter().find(|&card| card > &ba);
-            if val == None {
-                ba = 0u32;
-                continue;
-            }
-            ba = *val.unwrap();
+            ba = {
+                let val = cards.iter().find(|&card| card > &ba);
+                if val == None {
+                    ba = 0u32;
+                    continue;
+                }
+                *val.unwrap()
+            };
             cards.remove(&ba);
             if cards.is_empty() {
                 break 'fin;
