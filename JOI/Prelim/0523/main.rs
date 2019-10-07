@@ -1,5 +1,6 @@
 // JOI - Prelim  0523
 // カードゲーム
+use std::collections::BTreeSet;
 use std::fmt::Debug;
 use std::str::FromStr;
 
@@ -22,30 +23,29 @@ fn sub() -> bool {
     if n == 0 {
         return false;
     }
-    let mut cards0 = Vec::with_capacity(n);
-    let mut cards1 = Vec::with_capacity(n * 2);
+    let mut cards0 = BTreeSet::new();
     for _i in 0..n {
         let datas: Vec<u32> = read_line();
-        cards0.push(datas[0]);
+        cards0.insert(datas[0]);
     }
-    cards0.sort();
+    let mut cards1 = BTreeSet::new();
     for i in 1..2 * n + 1 {
         let i_u32 = i as u32;
-        if let Err(_val) = cards0.binary_search(&i_u32) {
-            cards1.push(i_u32);
+        if !cards0.contains(&i_u32) {
+            cards1.insert(i_u32);
         }
     }
     let mut cardss = vec![&mut cards0, &mut cards1];
     let mut ba = 0u32;
     'fin: loop {
         for cards in &mut cardss {
-            let index = cards.iter().position(|&card| card > ba);
-            if index == None {
+            let val = cards.iter().find(|&card| card > &ba);
+            if val == None {
                 ba = 0u32;
                 continue;
             }
-            let si = index.unwrap();
-            ba = cards.remove(si);
+            ba = *val.unwrap();
+            cards.remove(&ba);
             if cards.is_empty() {
                 break 'fin;
             }
