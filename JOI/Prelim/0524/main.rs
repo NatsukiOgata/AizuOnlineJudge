@@ -52,15 +52,14 @@ fn sub() -> bool
     }
 
     let mut matchs = Vec::new();
-    'next:
     for n_xy in &n_xys {
-        for m_xy in &m_xys {
+        if !m_xys.iter().all(|m_xy| {
             matchs.clear();
             matchs.push(n_xy[0] + m_xy[0]);
             matchs.push(n_xy[1] + m_xy[1]);
-            if !n_xys.contains(&matchs) {
-                continue 'next;
-            }
+            n_xys.contains(&matchs)
+        }) {
+            continue;
         }
         println!("{} {}", n_xy[0] - base_x, n_xy[1] - base_y);
     }
