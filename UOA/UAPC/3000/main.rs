@@ -1,3 +1,6 @@
+// UOA - UAPC  3000
+// Problem A: The Mean of Angles
+
 #[allow(dead_code)]
 fn read_line(n: usize) -> String {
     let mut ss = String::new();
@@ -69,21 +72,10 @@ fn main()
             ss[1] -= 360;
         }
     }
-    let mut over180_count = 0;
-    for s in &ss {
-        if *s > 180 {
-            over180_count += 1;
-        }
+    let sum = ss[0] + ss[1];
+    let mut ans = sum as f32 / 2.0;
+    if ans < 0.0 {
+        ans += 360.0;
     }
-    println!("{:?}", ss);
-    let mut sum;
-    if over180_count != 1 {
-        sum = ss[0] + ss[1];
-    }
-    else {
-        sum = ss[0] - ss[1];
-    }
-    sum = sum.abs();
-    let ans = sum / 2;
     println!("{}", ans);
 }
