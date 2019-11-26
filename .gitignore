@@ -33,3 +33,8 @@ a.out
 
 # Root txt files
 /*.txt
+
+# Rust files
+target/
+**/*.rs.bk
+Cargo.lock
