@@ -59,7 +59,7 @@ macro_rules! read_value {
 
 fn main()
 {
-    let ns: Vec<usize> = {
+    let ns = {
         let mut ns = Vec::new();
         loop {
             parse!{
@@ -73,14 +73,13 @@ fn main()
         }
         ns
     };
-    for n in &ns {
-        let ans = (1usize..*n).filter(|i| n % i == 0).fold(0usize, |sum, i| sum + i);
-        if n > &ans {
+    for n in ns {
+        let ans = (1..n).filter(|i| n % i == 0).fold(0, |sum, i| sum + i);
+        if n > ans {
             println!("deficient number");
         }
-        else if n < &ans {
+        else if n < ans {
             println!("abundant number");
-
         }
         else {
             println!("perfect number");
