@@ -65,18 +65,21 @@ fn main()
 
     let mut vs = vs.to_vec();
     vs.sort();
-    let mut top3 = Vec::with_capacity(3);
-    for i in 0..3 {
-        top3.push(vs[i]);
+    let mut top4 = Vec::new();
+    for i in 0..4 {
+        if i >= vs.len() {
+            break;
+        }
+        top4.push(vs[i]);
     }
 
-    let mut list = Vec::with_capacity(9);
-    for i in 0..3 {
-        for j in 0..3 {
+    let mut list = Vec::new();
+    for i in 0..top4.len() {
+        for j in 0..top4.len() {
             if i == j {
                 continue;
             }
-            let m_s = top3[i].to_string() + &top3[j].to_string();
+            let m_s = top4[i].to_string() + &top4[j].to_string();
             let m_n: i32 = m_s.parse().unwrap();
             list.push(m_n);
         }
