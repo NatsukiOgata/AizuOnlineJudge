@@ -76,8 +76,9 @@ fn sub() -> bool
             key: i32,
             val: i32,
         }
-        let set = map.entry(key).or_insert(HashSet::new());
-        set.insert(val);
+        map.entry(key).or_insert(HashSet::new()).insert(val);
+        // 逆方向も
+        map.entry(val).or_insert(HashSet::new()).insert(key);
     }
     let my = 1;
     if !map.contains_key(&my) {
@@ -101,6 +102,7 @@ fn sub() -> bool
             set_target.insert(ff);
         }
     }
+    set_target.remove(&my);  // あなたは除く
     let ans = set_target.len();
     println!("{}", ans);
     return true;
