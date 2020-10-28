@@ -68,13 +68,9 @@ fn main() {
     let mut ans = [0, 0, 0, 0, 0];
 
     let mut que = VecDeque::new();
-    let mut prev = i32::max_value();
-    for a in a_s {
-        if prev == i32::max_value() {
-            prev = a;
-            continue;
-        }
-
+    let mut prev = a_s[0];
+    for i in 1..n {
+        let a = a_s[i];
         let diff = a - prev;
         prev = a;
         if let Some(quep) = que.front() {
@@ -83,12 +79,11 @@ fn main() {
             }
         }
         que.push_front(diff);
-        //while que.len() > 3 {
-        //    que.pop_back();
-        //}
-
+        while que.len() > 3 {
+            que.pop_back();
+        }
         let quel = que.len();
-        if quel == 1 {
+        if quel <= 1 {
             continue;
         }
 
@@ -96,31 +91,29 @@ fn main() {
         let a0 = *iter.next().unwrap();
         let a1 = *iter.next().unwrap();
 
-        let mut j = usize::max_value();
+        let mut j = None;
         if a1 > 0 && a0 < 0 {
-            j = 3;
+            j = Some(3);
         } else if a1 < 0 && a0 > 0 {
-            j = 4;
+            j = Some(4);
         }
-
-        if quel >= 3 && j == usize::max_value() {
+        if j == None && quel >= 3 && a1 == 0 {
             let a2 = *iter.next().unwrap();
-
-            if a2 > 0 && a1 == 0 && a0 < 0 {
-                j = 0;
-            } else if a2 < 0 && a1 == 0 && a0 > 0 {
-                j = 1;
-            } else if a2 < 0 && a1 == 0 && a0 < 0 {
-                j = 2;
-            } else if a2 > 0 && a1 == 0 && a0 > 0 {
-                j = 2;
+            if a2 > 0 && a0 < 0 {
+                j = Some(0);
+            } else if a2 < 0 && a0 > 0 {
+                j = Some(1);
+            } else if a2 < 0 && a0 < 0 {
+                j = Some(2);
+            } else if a2 > 0 && a0 > 0 {
+                j = Some(2);
             }
         }
 
-        if j == usize::max_value() {
-            continue;
+        match j {
+            Some(jv) => ans[jv] += 1,
+            None => {}
         }
-        ans[j] += 1;
     }
 
     println!("{} {} {} {} {}", ans[0], ans[1], ans[2], ans[3], ans[4]);
