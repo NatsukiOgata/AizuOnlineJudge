@@ -1,6 +1,8 @@
 // UOA - UAPC  1552
 // Problem B: Mountain Climbing
 
+use std::collections::VecDeque;
+
 #[allow(dead_code)]
 fn read_line(n: usize) -> String {
     let mut ss = String::new();
@@ -64,39 +66,61 @@ fn main() {
     }
 
     let mut ans = [0, 0, 0, 0, 0];
-    for i in 2..n {
-        let a0 = a_s.get(i);
-        let a1 = a_s.get(i - 1);
-        let a2 = a_s.get(i - 2);
-        if a2 < a1 && a1 > a0 {
-            ans[3] += 1;
-            continue;
-        }
-        if a2 > a1 && a1 < a0 {
-            ans[4] += 1;
+
+    let mut que = VecDeque::new();
+    let mut prev = i32::max_value();
+    for a in a_s {
+        if prev == i32::max_value() {
+            prev = a;
             continue;
         }
 
-        if i < 3 {
+        let diff = a - prev;
+        prev = a;
+        if let Some(quep) = que.front() {
+            if *quep == diff {
+                continue;
+            }
+        }
+        que.push_front(diff);
+        //while que.len() > 3 {
+        //    que.pop_back();
+        //}
+
+        let quel = que.len();
+        if quel == 1 {
             continue;
         }
-        let a3 = a_s.get(i - 3);
-        if a3 < a2 && a2 == a1 && a1 > a0 {
-            ans[0] += 1;
+
+        let mut iter = que.iter();
+        let a0 = *iter.next().unwrap();
+        let a1 = *iter.next().unwrap();
+
+        let mut j = usize::max_value();
+        if a1 > 0 && a0 < 0 {
+            j = 3;
+        } else if a1 < 0 && a0 > 0 {
+            j = 4;
+        }
+
+        if quel >= 3 && j == usize::max_value() {
+            let a2 = *iter.next().unwrap();
+
+            if a2 > 0 && a1 == 0 && a0 < 0 {
+                j = 0;
+            } else if a2 < 0 && a1 == 0 && a0 > 0 {
+                j = 1;
+            } else if a2 < 0 && a1 == 0 && a0 < 0 {
+                j = 2;
+            } else if a2 > 0 && a1 == 0 && a0 > 0 {
+                j = 2;
+            }
+        }
+
+        if j == usize::max_value() {
             continue;
         }
-        if a3 > a2 && a2 == a1 && a1 < a0 {
-            ans[1] += 1;
-            continue;
-        }
-        if a3 < a2 && a2 == a1 && a1 < a0 {
-            ans[2] += 1;
-            continue;
-        }
-        if a3 > a2 && a2 == a1 && a1 > a0 {
-            ans[2] += 1;
-            continue;
-        }
+        ans[j] += 1;
     }
 
     println!("{} {} {} {} {}", ans[0], ans[1], ans[2], ans[3], ans[4]);
